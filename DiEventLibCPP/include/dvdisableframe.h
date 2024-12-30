@@ -1,7 +1,9 @@
 #pragma once
 
-struct DvDisableFrame {
-public:
-	float frameStart;
-	float frameEnd;
-};
+namespace dv {
+	struct DvDisableFrame {
+	public:
+		float frameStart;
+		float frameEnd;
+	};
+}

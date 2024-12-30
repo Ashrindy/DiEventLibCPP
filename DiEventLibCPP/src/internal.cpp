@@ -1,6 +1,6 @@
 #include "../include/internal.h"
 
-std::string Reader::readString(StringType type, size_t length)
+std::string dv::internal::Reader::readString(StringType type, size_t length)
 {
 	std::string result;
 	switch (type) {
@@ -29,14 +29,14 @@ std::string Reader::readString(StringType type, size_t length)
 	return result;
 }
 
-void Reader::seek(size_t ptr)
+void dv::internal::Reader::seek(size_t ptr)
 {
 	if (ptr > bufferSize)
 		throw std::runtime_error("Attempt to read beyond buffer size!");
 	position = ptr;
 }
 
-std::string Reader::readStringTableEntry(bool bit)
+std::string dv::internal::Reader::readStringTableEntry(bool bit)
 {
 	size_t pos = bit ? read<long long>() : read<int>();
 	size_t prepos = position;
@@ -50,14 +50,14 @@ std::string Reader::readStringTableEntry(bool bit)
 		return std::string("");
 }
 
-void Reader::skip(size_t offset)
+void dv::internal::Reader::skip(size_t offset)
 {
 	if ((position + offset) > bufferSize)
 		throw std::runtime_error("Attempt to read beyond buffer size!");
 	position += offset;
 }
 
-void Reader::dispose()
+void dv::internal::Reader::dispose()
 {
 	if (buffer)
 	{

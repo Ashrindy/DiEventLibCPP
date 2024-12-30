@@ -9,18 +9,20 @@
 int main()
 {
     std::cout << "Hello World!\n";
+    std::string filepath;
+    std::getline(std::cin, filepath);
 
-    std::ifstream file("E:\\Steam\\steamapps\\common\\SonicFrontiers\\image\\x64\\raw\\event\\scene\\zev_blow_rifleboss\\zev_blow_rifleboss.dvscene", std::ios::binary | std::ios::ate);
+    std::ifstream file(filepath, std::ios::binary | std::ios::ate);
     size_t fileSize = file.tellg();
     file.seekg(0, std::ios::beg);
-    void* fileData = malloc(fileSize);
-    file.read((char*)fileData, fileSize);
+    char* fileData = (char*)malloc(fileSize);
+    file.read(fileData, fileSize);
     file.close();
-    DvScene dvscene;
-    dvscene.read((const char*)fileData, fileSize);
-    auto data = dvscene.write();
-    std::ofstream ofile("E:\\Steam\\steamapps\\common\\SonicFrontiers\\image\\x64\\raw\\event\\scene\\zev_blow_rifleboss\\zev_blow_rifleboss.dvscene.dvscene", std::ios::binary);
-    ofile.write(data.data, data.size);
+    dv::DvScene dvscene;
+    dvscene.read(fileData, fileSize);
+    auto newData = dvscene.write();
+    std::ofstream ofile(std::string(filepath + ".dvscene"), std::ios::binary);
+    ofile.write(newData.data, newData.size);
     ofile.close();
     /*DiEventDataBase dievtdb;
     dievtdb.read((const char*)fileData, fileSize);*/

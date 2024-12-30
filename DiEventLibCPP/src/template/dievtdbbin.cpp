@@ -1,6 +1,6 @@
 #include "../../include/template/dievtdbbin.h"
 
-DiEventDataBase::Base* DiEventDataBaseBinary::readBase(Reader* reader)
+dv::db::DiEventDataBase::Base* dv::db::DiEventDataBaseBinary::readBase(dv::internal::Reader* reader)
 {
 	bool bit = flags.test(2);
 	bool descriptions = flags.test(1);
@@ -17,7 +17,7 @@ DiEventDataBase::Base* DiEventDataBaseBinary::readBase(Reader* reader)
 	return base;
 }
 
-DiEventDataBase::Field* DiEventDataBaseBinary::readField(Reader* reader)
+dv::db::DiEventDataBase::Field* dv::db::DiEventDataBaseBinary::readField(dv::internal::Reader* reader)
 {
 	bool bit = flags.test(2);
 	DiEventDataBase::Base* fieldBase = readBase(reader);
@@ -123,7 +123,7 @@ DiEventDataBase::Field* DiEventDataBaseBinary::readField(Reader* reader)
 	}
 }
 
-DiEventDataBase::Node* DiEventDataBaseBinary::readNode(Reader* reader)
+dv::db::DiEventDataBase::Node* dv::db::DiEventDataBaseBinary::readNode(dv::internal::Reader* reader)
 {
 	bool bit = flags.test(2);
 	DiEventDataBase::Base* base = readBase(reader);
@@ -138,10 +138,10 @@ DiEventDataBase::Node* DiEventDataBaseBinary::readNode(Reader* reader)
 	return node;
 }
 
-void DiEventDataBaseBinary::read(const char* data, size_t size)
+void dv::db::DiEventDataBaseBinary::read(const char* data, size_t size)
 {
-	Reader* reader = new Reader((char*)data, size);
-	std::string signature = reader->readString(Reader::StringType::FixedLength, 7);
+	dv::internal::Reader* reader = new dv::internal::Reader((char*)data, size);
+	std::string signature = reader->readString(dv::internal::Reader::StringType::FixedLength, 7);
 	if (signature != "DiEvtDB")
 		throw std::runtime_error("Not a DiEvtDB file!");
 	flags = std::bitset<8>(reader->read<int8_t>());

@@ -165,7 +165,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\dvscene.h" />
-    <ClCompile Include="src\dvscene.cpp" />
     <ClCompile Include="src\internal.cpp" />
     <ClCompile Include="src\template\dievtdb.cpp" />
     <ClCompile Include="src\template\dievtdbbin.cpp" />
