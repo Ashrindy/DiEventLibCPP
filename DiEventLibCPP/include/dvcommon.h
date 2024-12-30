@@ -17,7 +17,7 @@ public:
 	ptr32<DvObject<DvDisableFrame>, 0x1C> disableFrameInfo;
 	ptr32<DvObject<float>, 0x20> resourceCutInfo;
 	ptr32<DvObject<float>, 0x24> soundCutInfo;
-	ptr32<DvNode, 0x28> node;
+	ptr32<RawDvNode, 0x28> node;
 	float chainCameraIn;
 	float chainCameraOut;
 	int type;

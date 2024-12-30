@@ -45,6 +45,7 @@ public:
 	};
 
 	ConditionType type;
+	size_t dataSize;
 	char* data;
 };
 

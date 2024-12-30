@@ -46,3 +46,9 @@ struct Guid {
 			std::equal(std::begin(Data4), std::end(Data4), std::begin(other.Data4));
 	}
 };
+
+struct Buffer {
+public:
+	char* data;
+	size_t size;
+};

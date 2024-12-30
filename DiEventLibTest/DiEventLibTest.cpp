@@ -18,7 +18,10 @@ int main()
     file.close();
     DvScene dvscene;
     dvscene.read((const char*)fileData, fileSize);
-    std::cout << dvscene.dvCommon->pages[0].name;
+    auto data = dvscene.write();
+    std::ofstream ofile("E:\\Steam\\steamapps\\common\\SonicFrontiers\\image\\x64\\raw\\event\\scene\\zev_blow_rifleboss\\zev_blow_rifleboss.dvscene.dvscene", std::ios::binary);
+    ofile.write(data.data, data.size);
+    ofile.close();
     /*DiEventDataBase dievtdb;
     dievtdb.read((const char*)fileData, fileSize);*/
     /*DvScene* scene = (DvScene*)fileData;
