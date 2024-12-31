@@ -60,18 +60,6 @@ namespace dv {
 
 	struct DvNode {
 	public:
-		enum class Category : unsigned int {
-			Path = 1,
-			Camera = 3,
-			CameraMotion,
-			Character,
-			CharacterMotion,
-			ModelCustom = 8,
-			MotionModel = 10,
-			ModelNode,
-			Element
-		};
-
 		internal::Guid guid;
 		unsigned int category;
 		unsigned int nodeFlags;

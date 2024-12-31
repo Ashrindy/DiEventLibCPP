@@ -160,6 +160,7 @@
     <ClInclude Include="include\dvresource.h" />
     <ClInclude Include="include\internal.h" />
     <ClInclude Include="include\memory.h" />
+    <ClInclude Include="include\dvnodestructs.h" />
     <ClInclude Include="include\template\dievtdb.h" />
     <ClInclude Include="include\template\dievtdbbin.h" />
   </ItemGroup>
