@@ -1,6 +1,7 @@
 #pragma once
 #include "dvheader.h"
 #include "dvobject.h"
+#include "dvnodestructs.h"
 #include <vector>
 
 namespace dv {

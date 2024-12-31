@@ -35,6 +35,7 @@ int main()
     dievtdb.read((const char*)fileData, fileSize);
 
     auto templateData = dvscene.dvCommon->node->childNodes[1].getTemplateData(dievtdb);
+    auto data = dvscene.dvCommon->node->childNodes[1].getData<dv::nodes::rangers::Element>();
 
     auto newData = dvscene.write();
     std::ofstream ofile(std::string(filepath + ".dvscene"), std::ios::binary);

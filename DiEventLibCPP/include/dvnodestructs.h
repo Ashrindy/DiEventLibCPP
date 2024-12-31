@@ -1,7 +1,7 @@
 #pragma once
 #include "internal.h"
 
-namespace dv::structs::nodes::rangers {
+namespace dv::nodes::rangers {
 	enum class NodeCategory : unsigned int { // for anyone curious enough, the skips are intentional, since this is all of the DvNodes the game has
 		Path = 1,
 		Camera = 3,
@@ -126,7 +126,7 @@ namespace dv::structs::nodes::rangers {
 	struct FolderCondition;
 }
 
-namespace dv::structs::nodes::miller {
+namespace dv::nodes::miller {
 	enum class NodeCategory : unsigned int { // for anyone curious enough, the skips are intentional, since this is all of the DvNodes the game has. somewhere on this list is CameraInterpolateHelper, it isn't mentioned in the DvNode create function
 		Path = 1,
 		Camera = 3,
