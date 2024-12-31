@@ -72,7 +72,7 @@ namespace dv {
 		DvNode* readNode(RawDvNode* rawNode) {
 			DvNode* node = new DvNode();
 			memcpy(node->name, rawNode->name, 64);
-			node->category = (DvNode::Category)rawNode->category;
+			node->category = rawNode->category;
 			node->guid = rawNode->guid;
 			node->nodeFlags = rawNode->nodeFlags;
 			node->priority = rawNode->priority;
@@ -179,7 +179,7 @@ namespace dv {
 		void writeNode(char* buffer, size_t* pos, DvNode* node) {
 			RawDvNode* rawNode = (RawDvNode*)&buffer[*pos];
 			rawNode->guid = node->guid;
-			rawNode->category = (unsigned int)node->category;
+			rawNode->category = node->category;
 			rawNode->nodeSize = node->dataSize / 4;
 			rawNode->childCount = node->childNodes.size();
 			rawNode->nodeFlags = node->nodeFlags;

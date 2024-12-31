@@ -20,12 +20,29 @@ int main()
     file.close();
     dv::DvScene dvscene;
     dvscene.read(fileData, fileSize);
+
+    std::cout << "Template\n";
+    std::getline(std::cin, filepath);
+
+    file = std::ifstream(filepath, std::ios::binary | std::ios::ate);
+    fileSize = file.tellg();
+    file.seekg(0, std::ios::beg);
+    fileData = (char*)malloc(fileSize);
+    file.read(fileData, fileSize);
+    file.close();
+
+    dv::db::DiEventDataBase dievtdb;
+    dievtdb.read((const char*)fileData, fileSize);
+
+    auto templateData = dvscene.dvCommon->node->getTemplateData(dievtdb);
+    auto x = (dv::internal::Matrix4x4*)templateData["World"].value;
+    x->m[0][0] = 10;
+
     auto newData = dvscene.write();
     std::ofstream ofile(std::string(filepath + ".dvscene"), std::ios::binary);
     ofile.write(newData.data, newData.size);
     ofile.close();
-    /*DiEventDataBase dievtdb;
-    dievtdb.read((const char*)fileData, fileSize);*/
+
     /*DvScene* scene = (DvScene*)fileData;
     DvCommon* common = scene->dvCommon.get();
     auto x = scene->dvResource.get()->getItems()[0];

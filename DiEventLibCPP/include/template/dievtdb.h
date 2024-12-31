@@ -1,9 +1,37 @@
 #pragma once
+#include "../internal.h"
 #include <vector>
 #include <string>
 #include <map>
 
 namespace dv::db {
+	static size_t dataTypeSizes[] =
+	{
+		sizeof(uint8_t),
+		sizeof(int8_t),
+		sizeof(uint16_t),
+		sizeof(int16_t),
+		sizeof(uint32_t),
+		sizeof(int32_t),
+		sizeof(float),
+		sizeof(internal::Vector2),
+		sizeof(internal::Vector3),
+		sizeof(internal::Vector4),
+		sizeof(internal::Matrix4x4),
+		sizeof(0),
+		sizeof(0),
+		sizeof(0),
+		sizeof(0),
+		sizeof(internal::Guid),
+		sizeof(0),
+		sizeof(0),
+		sizeof(bool),
+		sizeof(internal::RGBA8),
+		sizeof(internal::RGB32F),
+		sizeof(internal::RGBA32),
+		sizeof(0),
+	};
+
 	class DiEventDataBase {
 	public:
 		struct Base {
@@ -54,7 +82,7 @@ namespace dv::db {
 			struct Struct {
 			public:
 				std::string name;
-				std::vector<Field> fields;
+				std::vector<Field*> fields;
 			};
 		};
 
@@ -102,7 +130,7 @@ namespace dv::db {
 		public:
 			std::string fullname;
 			unsigned int nodeCategory;
-			std::vector<Field> fields;
+			std::vector<Field*> fields;
 		};
 
 	public:

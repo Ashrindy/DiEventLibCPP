@@ -40,7 +40,7 @@ dv::db::DiEventDataBase::Field* dv::db::DiEventDataBaseBinary::readField(dv::int
 				field->structValue.name = reader->readStringTableEntry(bit);
 				unsigned int fieldCount = reader->read<unsigned int>();
 				for (auto x = 0; x < fieldCount; x++)
-					field->structValue.fields.push_back(*readField(reader));
+					field->structValue.fields.push_back(readField(reader));
 				return field;
 				break;
 			}
@@ -53,7 +53,7 @@ dv::db::DiEventDataBase::Field* dv::db::DiEventDataBaseBinary::readField(dv::int
 			field->structValue.name = reader->readStringTableEntry(bit);
 			unsigned int fieldCount = reader->read<unsigned int>();
 			for (auto x = 0; x < fieldCount; x++)
-				field->structValue.fields.push_back(*readField(reader));
+				field->structValue.fields.push_back(readField(reader));
 			return field;
 			break;
 		}
@@ -89,7 +89,7 @@ dv::db::DiEventDataBase::Field* dv::db::DiEventDataBaseBinary::readField(dv::int
 		field->structValue.name = reader->readStringTableEntry(bit);
 		unsigned int fieldCount = reader->read<unsigned int>();
 		for (auto x = 0; x < fieldCount; x++)
-			field->structValue.fields.push_back(*readField(reader));
+			field->structValue.fields.push_back(readField(reader));
 		return field;
 		break;
 	}
@@ -134,7 +134,7 @@ dv::db::DiEventDataBase::Node* dv::db::DiEventDataBaseBinary::readNode(dv::inter
 	node->nodeCategory = reader->read<unsigned int>();
 	int fieldCount = reader->read<int>();
 	for (auto y = 0; y < fieldCount; y++)
-		node->fields.push_back(*readField(reader));
+		node->fields.push_back(readField(reader));
 	return node;
 }
 
