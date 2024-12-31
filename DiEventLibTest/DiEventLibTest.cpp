@@ -34,9 +34,7 @@ int main()
     dv::db::DiEventDataBase dievtdb;
     dievtdb.read((const char*)fileData, fileSize);
 
-    auto templateData = dvscene.dvCommon->node->getTemplateData(dievtdb);
-    auto x = (dv::internal::Matrix4x4*)templateData["World"].value;
-    x->m[0][0] = 10;
+    auto templateData = dvscene.dvCommon->node->childNodes[1].getTemplateData(dievtdb);
 
     auto newData = dvscene.write();
     std::ofstream ofile(std::string(filepath + ".dvscene"), std::ios::binary);

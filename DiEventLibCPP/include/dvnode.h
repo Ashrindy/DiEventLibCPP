@@ -180,6 +180,22 @@ namespace dv {
 				for (auto& x : node->fields)
 					if(auto* y = getTemplateField(x, &pos))
 						result.emplace(x->name, *y);
+				auto isElement = node->descriptions.find("nodeElement");
+				if (isElement != node->descriptions.end()) {
+					int type = *((int*)result[node->descriptions["nodeElement"]].value);
+					db::DiEventDataBase::Node* element = new db::DiEventDataBase::Node();
+					for (auto& x : dievtdb.elements) {
+						if (x.nodeCategory == type) {
+							element = &x;
+							break;
+						}
+					}
+					if (element) {
+						for (auto& x : element->fields)
+							if (auto* y = getTemplateField(x, &pos))
+								result.emplace(x->name, *y);
+					}
+				}
 			}
 			return result;
 		}
