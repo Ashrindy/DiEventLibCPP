@@ -7,10 +7,19 @@
 namespace dv {
 	class DvScene {
 	private:
+		void readCommon(RawDvCommon* rawDvCommon) {
+			dvCommon = new DvCommon();
+			dvCommon->frameStart = rawDvCommon->frameStart;
+			dvCommon->frameEnd = rawDvCommon->frameEnd;
+			dvCommon->drawNodeNumber = rawDvCommon->drawNodeNumber;
+			dvCommon->chainCameraIn = rawDvCommon->chainCameraIn;
+			dvCommon->chainCameraOut = rawDvCommon->chainCameraOut;
+			dvCommon->type = rawDvCommon->type;
+			dvCommon->skipPointTick = rawDvCommon->skipPointTick;
+		}
 		void readCuts(float* cuts, size_t count) {
-			for (auto x = 0; x < count; x++) {
+			for (auto x = 0; x < count; x++)
 				dvCommon->cuts.push_back(cuts[x]);
-			}
 		}
 		void readPages(const char* pages, size_t count) {
 			size_t pagePos = 0;
@@ -56,19 +65,16 @@ namespace dv {
 			}
 		}
 		void readDisableFrames(DvDisableFrame* disableFrames, size_t count) {
-			for (auto x = 0; x < count; x++) {
+			for (auto x = 0; x < count; x++)
 				dvCommon->disableFrameInfo.push_back(disableFrames[x]);
-			}
 		}
 		void readResourceCuts(float* resourceCuts, size_t count) {
-			for (auto x = 0; x < count; x++) {
+			for (auto x = 0; x < count; x++)
 				dvCommon->resourceCutInfo.push_back(resourceCuts[x]);
-			}
 		}
 		void readSoundCuts(float* soundCuts, size_t count) {
-			for (auto x = 0; x < count; x++) {
+			for (auto x = 0; x < count; x++)
 				dvCommon->soundCutInfo.push_back(soundCuts[x]);
-			}
 		}
 		DvNode* readNode(RawDvNode* rawNode) {
 			DvNode* node = new DvNode();
@@ -79,13 +85,54 @@ namespace dv {
 			node->priority = rawNode->priority;
 			node->dataSize = rawNode->nodeSize * 4;
 			node->data = &((char*)rawNode)[sizeof(RawDvNode)];
-			for (auto& x : rawNode->getChildNodes()) {
+			for (auto& x : rawNode->getChildNodes())
 				node->childNodes.push_back(*readNode(x));
-			}
 			return node;
 		}
+		void readResources(Resource* buffer, size_t count) {
+			for (auto x = 0; x < count; x++)
+				dvResource.push_back(buffer[x]);
+		}
 
-
+		size_t getDvCommonSize() {
+			size_t commonSize = 0;
+			commonSize += sizeof(RawDvCommon);
+			commonSize += 0x10;
+			commonSize += dvCommon->cuts.size() * sizeof(float);
+			commonSize += 0x10;
+			commonSize += dvCommon->pages.size() * sizeof(RawDvPage);
+			for (auto& x : dvCommon->pages) {
+				commonSize += x.unkData.size() * sizeof(int);
+				commonSize += x.transition.size() * sizeof(RawDvTransition);
+				for (auto& y : x.transition) {
+					commonSize += y.conditions.size() * sizeof(RawDvCondition);
+					for (auto& z : y.conditions) {
+						commonSize += z.dataSize;
+					}
+				}
+			}
+			commonSize += 0x10;
+			commonSize += dvCommon->disableFrameInfo.size() * sizeof(DvDisableFrame);
+			commonSize += 0x10;
+			commonSize += dvCommon->resourceCutInfo.size() * sizeof(float);
+			commonSize += 0x10;
+			commonSize += dvCommon->soundCutInfo.size() * sizeof(float);
+			getNodeSize(&commonSize, dvCommon->node);
+			return commonSize;
+		}
+		size_t getDvResourceSize() {
+			size_t resourceSize = 0;
+			resourceSize += 0x10;
+			resourceSize += dvResource.size() * sizeof(Resource);
+			return resourceSize;
+		}
+		size_t getDvSceneSize() {
+			size_t filesize = sizeof(DvHeader);
+			size_t commonSize = getDvCommonSize();
+			size_t resourceSize = getDvResourceSize();
+			filesize += commonSize + resourceSize;
+			return filesize;
+		}
 		void getNodeSize(size_t* size, DvNode* node) {
 			(*size) += sizeof(RawDvNode);
 			(*size) += node->dataSize;
@@ -93,6 +140,15 @@ namespace dv {
 				getNodeSize(size, &x);
 		}
 
+		void writeCommon(char* buffer, size_t* pos) {
+			RawDvCommon* rawDvCommon = (RawDvCommon*)&buffer[*pos];
+			rawDvCommon->frameStart = dvCommon->frameStart;
+			rawDvCommon->frameEnd = dvCommon->frameEnd;
+			rawDvCommon->drawNodeNumber = dvCommon->drawNodeNumber;
+			rawDvCommon->chainCameraIn = dvCommon->chainCameraIn;
+			rawDvCommon->chainCameraOut = dvCommon->chainCameraOut;
+			*pos += sizeof(RawDvCommon);
+		}
 		void writeCuts(char* buffer, size_t* pos) {
 			DvObject<float>* cuts = (DvObject<float>*) & buffer[*pos];
 			cuts->count = dvCommon->cuts.size();
@@ -206,18 +262,9 @@ namespace dv {
 
 		void read(const char* data, size_t size) {
 			DvHeader* header = (DvHeader*)data;
-			auto* rawDvResource = header->dvResource.get();
-			for (auto x = 0; x < rawDvResource->count; x++)
-				dvResource.push_back(rawDvResource->getItems()[x]);
+			
 			auto* rawDvCommon = header->dvCommon.get();
-			dvCommon = new DvCommon();
-			dvCommon->frameStart = rawDvCommon->frameStart;
-			dvCommon->frameEnd = rawDvCommon->frameEnd;
-			dvCommon->drawNodeNumber = rawDvCommon->drawNodeNumber;
-			dvCommon->chainCameraIn = rawDvCommon->chainCameraIn;
-			dvCommon->chainCameraOut = rawDvCommon->chainCameraOut;
-			dvCommon->type = rawDvCommon->type;
-			dvCommon->skipPointTick = rawDvCommon->skipPointTick;
+			readCommon(rawDvCommon);
 
 			auto* cuts = rawDvCommon->cuts.get();
 			readCuts(cuts->getItems(), cuts->count);
@@ -236,43 +283,15 @@ namespace dv {
 
 			auto* node = rawDvCommon->node.get();
 			dvCommon->node = readNode(node);
+
+			auto* rawDvResource = header->dvResource.get();
+			readResources(rawDvResource->getItems(), rawDvResource->count);
 		}
 
 		internal::Buffer write() {
 			internal::Buffer buffer{};
-			size_t filesize = sizeof(DvHeader);
 
-			size_t commonSize = 0;
-			commonSize += sizeof(RawDvCommon);
-			commonSize += 0x10;
-			commonSize += dvCommon->cuts.size() * sizeof(float);
-			commonSize += 0x10;
-			commonSize += dvCommon->pages.size() * sizeof(RawDvPage);
-			for (auto& x : dvCommon->pages) {
-				commonSize += x.unkData.size() * sizeof(int);
-				commonSize += x.transition.size() * sizeof(RawDvTransition);
-				for (auto& y : x.transition) {
-					commonSize += y.conditions.size() * sizeof(RawDvCondition);
-					for (auto& z : y.conditions) {
-						commonSize += z.dataSize;
-					}
-				}
-			}
-			commonSize += 0x10;
-			commonSize += dvCommon->disableFrameInfo.size() * sizeof(DvDisableFrame);
-			commonSize += 0x10;
-			commonSize += dvCommon->resourceCutInfo.size() * sizeof(float);
-			commonSize += 0x10;
-			commonSize += dvCommon->soundCutInfo.size() * sizeof(float);
-			getNodeSize(&commonSize, dvCommon->node);
-
-			size_t resourceSize = 0;
-			resourceSize += 0x10;
-			resourceSize += dvResource.size() * sizeof(Resource);
-
-			filesize += commonSize + resourceSize;
-
-			buffer.size = filesize;
+			buffer.size = getDvSceneSize();
 			buffer.data = new char[buffer.size];
 			std::memset(buffer.data, 0, buffer.size);
 
@@ -280,13 +299,9 @@ namespace dv {
 
 			char* dataBuffer = &buffer.data[0x20];
 			size_t pos = 0;
+			
 			RawDvCommon* rawDvCommon = (RawDvCommon*)&dataBuffer[pos];
-			rawDvCommon->frameStart = dvCommon->frameStart;
-			rawDvCommon->frameEnd = dvCommon->frameEnd;
-			rawDvCommon->drawNodeNumber = dvCommon->drawNodeNumber;
-			rawDvCommon->chainCameraIn = dvCommon->chainCameraIn;
-			rawDvCommon->chainCameraOut = dvCommon->chainCameraOut;
-			pos += sizeof(RawDvCommon);
+			writeCommon(dataBuffer, &pos);
 
 			rawDvCommon->cuts.ptr = pos;
 			writeCuts(dataBuffer, &pos);
