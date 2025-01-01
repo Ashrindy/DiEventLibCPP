@@ -127,7 +127,7 @@ namespace dv::nodes::rangers {
 }
 
 namespace dv::nodes::miller {
-	enum class NodeCategory : unsigned int { // for anyone curious enough, the skips are intentional, since this is all of the DvNodes the game has. somewhere on this list is CameraInterpolateHelper, it isn't mentioned in the DvNode create function
+	enum class NodeCategory : unsigned int { // for anyone curious enough, the skips are intentional, since this is all of the DvNodes the game has. somewhere on this list is CameraInterpolateHelper, but it isn't mentioned in the DvNode create function
 		Path = 1,
 		Camera = 3,
 		CameraMotion = 4,
