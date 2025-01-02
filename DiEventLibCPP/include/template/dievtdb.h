@@ -7,29 +7,29 @@
 namespace dv::db {
 	static size_t dataTypeSizes[] =
 	{
-		sizeof(uint8_t),
-		sizeof(int8_t),
-		sizeof(uint16_t),
-		sizeof(int16_t),
-		sizeof(uint32_t),
-		sizeof(int32_t),
-		sizeof(float),
-		sizeof(internal::Vector2),
-		sizeof(internal::Vector3),
-		sizeof(internal::Vector4),
-		sizeof(internal::Matrix4x4),
-		sizeof(0),
-		sizeof(0),
-		sizeof(0),
-		sizeof(0),
-		sizeof(internal::Guid),
-		sizeof(0),
-		sizeof(0),
-		sizeof(bool),
-		sizeof(internal::RGBA8),
-		sizeof(internal::RGB32F),
-		sizeof(internal::RGBA32),
-		sizeof(0),
+		sizeof(uint8_t),				//u8
+		sizeof(int8_t),					//s8
+		sizeof(uint16_t),				//u16
+		sizeof(int16_t),				//s16
+		sizeof(uint32_t),				//u32
+		sizeof(int32_t),				//s32
+		sizeof(float),					//f32
+		sizeof(internal::Vector2),		//vec2
+		sizeof(internal::Vector3),		//vec3
+		sizeof(internal::Vector4),		//vec4
+		sizeof(internal::Matrix4x4),	//mat4x4
+		sizeof(0),						//curve
+		sizeof(0),						//str
+		sizeof(0),						//enm
+		sizeof(0),						//strct
+		sizeof(internal::Guid),			//guid
+		sizeof(0),						//array
+		sizeof(0),						//arraysize
+		sizeof(bool),					//boolean
+		sizeof(internal::RGBA8),		//rgba8
+		sizeof(internal::RGB32F),		//rgb32
+		sizeof(internal::RGBA32),		//rgba32
+		sizeof(0),						//padding
 	};
 
 	class DiEventDataBase {
