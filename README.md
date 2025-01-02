@@ -19,7 +19,9 @@ A library with simple reading and writing function for the .dvscene file from HE
 
 - CMake 3.27 or higher
 
-`cmake -B build`
+```sh
+cmake -B build
+```
 
 ## 📝 Documentation 📝
 
