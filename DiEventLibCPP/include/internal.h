@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <fstream>
+#include <cassert>
 
 namespace dv::internal {
 	class Reader {
@@ -19,8 +20,7 @@ namespace dv::internal {
 
 		template<typename T>
 		T read() {
-			if (position + sizeof(T) > bufferSize)
-				throw std::runtime_error("Attempt to read beyond buffer size!");
+			assert((position + sizeof(T)) > bufferSize, "Attempt to read beyond buffer size!");
 			T value;
 			std::memcpy(&value, buffer + position, sizeof(T));
 			position += sizeof(T);

@@ -5,14 +5,6 @@
 #include <map>
 #include <optional>
 
-struct Path {
-public:
-	float mat[4][4];
-	unsigned int flags;
-private:
-	char unknown0[12];
-};
-
 namespace dv {
 	struct RawDvNode {
 	public:

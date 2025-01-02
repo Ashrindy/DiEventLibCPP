@@ -142,8 +142,7 @@ void dv::db::DiEventDataBaseBinary::read(const char* data, size_t size)
 {
 	dv::internal::Reader* reader = new dv::internal::Reader((char*)data, size);
 	std::string signature = reader->readString(dv::internal::Reader::StringType::FixedLength, 7);
-	if (signature != "DiEvtDB")
-		throw std::runtime_error("Not a DiEvtDB file!");
+	assert(signature != "DiEvtDB", "Not a DiEvtDB file!");
 	flags = std::bitset<8>(reader->read<int8_t>());
 	bool bit = flags.test(2);
 	bool descriptions = flags.test(1);

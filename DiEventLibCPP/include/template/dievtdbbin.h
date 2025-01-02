@@ -3,6 +3,7 @@
 #include "../internal.h"
 #include <stdexcept>
 #include <bitset>
+#include <cassert>
 
 namespace dv::db {
 	class DiEventDataBaseBinary {

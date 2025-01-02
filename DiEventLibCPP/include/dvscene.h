@@ -323,6 +323,8 @@ namespace dv {
 
 			header->dvResource.ptr = pos;
 			writeResources(dataBuffer, &pos);
+			
+			assert(pos > buffer.size, "Attempt to write beyond buffer size!");
 
 			return buffer;
 		}

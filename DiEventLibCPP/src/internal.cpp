@@ -8,8 +8,7 @@ std::string dv::internal::Reader::readString(StringType type, size_t length)
 	{
 		size_t size = 0;
 		while (buffer[position + size] != '\0') {
-			if ((position + size) > bufferSize)
-				throw std::runtime_error("Attempt to read beyond buffer size!");
+			assert((position + size) > bufferSize, "Attempt to read beyond buffer size!");
 			size++;
 		}
 		result = std::string(&buffer[position], size);
@@ -18,8 +17,7 @@ std::string dv::internal::Reader::readString(StringType type, size_t length)
 	}
 	case StringType::FixedLength:
 	{
-		if ((position + length) > bufferSize)
-			throw std::runtime_error("Attempt to read beyond buffer size!");
+		assert((position + length) > bufferSize, "Attempt to read beyond buffer size!");
 		result = std::string(&buffer[position], length);
 		position += length;
 		break;
@@ -31,8 +29,7 @@ std::string dv::internal::Reader::readString(StringType type, size_t length)
 
 void dv::internal::Reader::seek(size_t ptr)
 {
-	if (ptr > bufferSize)
-		throw std::runtime_error("Attempt to read beyond buffer size!");
+	assert(ptr > bufferSize, "Attempt to read beyond buffer size!");
 	position = ptr;
 }
 
@@ -52,8 +49,7 @@ std::string dv::internal::Reader::readStringTableEntry(bool bit)
 
 void dv::internal::Reader::skip(size_t offset)
 {
-	if ((position + offset) > bufferSize)
-		throw std::runtime_error("Attempt to read beyond buffer size!");
+	assert((position + offset) > bufferSize, "Attempt to read beyond buffer size!");
 	position += offset;
 }
 
