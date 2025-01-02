@@ -30,6 +30,16 @@ dv::DvScene dvscene;
 dvscene.read(fileData, fileSize);
 ```
 
+### Template Reading (still W.I.P)
+
+For template reading a dievtdb file is required (or its .json version).
+
+```c++
+dv::db::DiEventDataBase dievtdb;
+dievtdb.read(fileData, fileSize);
+std::map<std::string, dv::DvNode::Field> data = dvscene.dvCommon->node->getTemplateData(dievtdb);
+```
+
 ### Writing
 
 ```csharp
