@@ -15,10 +15,11 @@ A library with simple reading and writing function for the .dvscene file from HE
 
 ## Setting up the development environment
 
-# Requirements
+### Requirements
 
 - CMake 3.27 or higher
-  `cmake -B build`
+
+`cmake -B build`
 
 ## 📝 Documentation 📝
 
