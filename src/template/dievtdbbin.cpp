@@ -1,4 +1,4 @@
-#include "../../include/template/dievtdbbin.h"
+#include "dieventlib/template/dievtdbbin.h"
 
 dv::db::DiEventDataBase::Base* dv::db::DiEventDataBaseBinary::readBase(dv::internal::Reader* reader)
 {

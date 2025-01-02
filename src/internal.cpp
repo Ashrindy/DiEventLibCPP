@@ -1,4 +1,4 @@
-#include "../include/internal.h"
+#include "dieventlib/internal.h"
 
 std::string dv::internal::Reader::readString(StringType type, size_t length)
 {

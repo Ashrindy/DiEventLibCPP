@@ -1,5 +1,5 @@
-#include "../../include/template/dievtdb.h"
-#include "../../include/template/dievtdbbin.h"
+#include "dieventlib/template/dievtdb.h"
+#include "dieventlib/template/dievtdbbin.h"
 
 void dv::db::DiEventDataBase::read(const char* data, size_t size) {
 	if (std::strncmp(data, "DiEvtDB", 7) == 0) {
