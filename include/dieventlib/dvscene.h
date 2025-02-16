@@ -33,9 +33,8 @@ namespace dv {
 				memcpy(page->name, y->name, 32);
 				pagePos += sizeof(RawDvPage);
 				int* unkData = (int*)&pages[pagePos];
-				for (auto z = 0; z < y->pageSize; z++) {
+				for (auto z = 0; z < y->pageSize; z++)
 					page->unkData.push_back(unkData[z]);
-				}
 				pagePos += y->pageSize * 4;
 				auto* transitions = (char*)&pages[pagePos];
 				size_t transitionPos = 0;
@@ -106,9 +105,8 @@ namespace dv {
 				commonSize += x.transition.size() * sizeof(RawDvTransition);
 				for (auto& y : x.transition) {
 					commonSize += y.conditions.size() * sizeof(RawDvCondition);
-					for (auto& z : y.conditions) {
+					for (auto& z : y.conditions) 
 						commonSize += z.dataSize;
-					}
 				}
 			}
 			commonSize += 0x10;
@@ -117,7 +115,7 @@ namespace dv {
 			commonSize += dvCommon->resourceCutInfo.size() * sizeof(float);
 			commonSize += 0x10;
 			commonSize += dvCommon->soundCutInfo.size() * sizeof(float);
-			getNodeSize(&commonSize, dvCommon->node);
+			getNodeSize(commonSize, dvCommon->node);
 			return commonSize;
 		}
 		size_t getDvResourceSize() {
@@ -133,31 +131,31 @@ namespace dv {
 			filesize += commonSize + resourceSize;
 			return filesize;
 		}
-		void getNodeSize(size_t* size, DvNode* node) {
-			(*size) += sizeof(RawDvNode);
-			(*size) += node->dataSize;
+		void getNodeSize(size_t& size, DvNode* node) {
+			size += sizeof(RawDvNode);
+			size += node->dataSize;
 			for (auto& x : node->childNodes)
 				getNodeSize(size, &x);
 		}
 
-		void writeCommon(char* buffer, size_t* pos) {
-			RawDvCommon* rawDvCommon = (RawDvCommon*)&buffer[*pos];
+		void writeCommon(char* buffer, size_t& pos) {
+			RawDvCommon* rawDvCommon = (RawDvCommon*)&buffer[pos];
 			rawDvCommon->frameStart = dvCommon->frameStart;
 			rawDvCommon->frameEnd = dvCommon->frameEnd;
 			rawDvCommon->drawNodeNumber = dvCommon->drawNodeNumber;
 			rawDvCommon->chainCameraIn = dvCommon->chainCameraIn;
 			rawDvCommon->chainCameraOut = dvCommon->chainCameraOut;
-			*pos += sizeof(RawDvCommon);
+			pos += sizeof(RawDvCommon);
 		}
-		void writeCuts(char* buffer, size_t* pos) {
-			DvObject<float>* cuts = (DvObject<float>*) & buffer[*pos];
+		void writeCuts(char* buffer, size_t& pos) {
+			DvObject<float>* cuts = (DvObject<float>*)&buffer[pos];
 			cuts->count = dvCommon->cuts.size();
-			*pos += sizeof(DvObject<float>);
-			memcpy(&buffer[*pos], (char*)dvCommon->cuts.data(), dvCommon->cuts.size() * sizeof(float));
-			*pos += cuts->count * sizeof(float);
+			pos += sizeof(DvObject<float>);
+			memcpy(&buffer[pos], (char*)dvCommon->cuts.data(), dvCommon->cuts.size() * sizeof(float));
+			pos += cuts->count * sizeof(float);
 		}
-		void writePages(char* buffer, size_t* pos) {
-			DvObject<char>* pages = (DvObject<char>*) & buffer[*pos];
+		void writePages(char* buffer, size_t& pos) {
+			DvObject<char>* pages = (DvObject<char>*)&buffer[pos];
 			pages->count = dvCommon->pages.size();
 			pages->size += dvCommon->pages.size() * sizeof(RawDvPage);
 			for (auto& x : dvCommon->pages) {
@@ -165,15 +163,14 @@ namespace dv {
 				pages->size += x.transition.size() * sizeof(RawDvTransition);
 				for (auto& y : x.transition) {
 					pages->size += y.conditions.size() * sizeof(RawDvCondition);
-					for (auto& z : y.conditions) {
+					for (auto& z : y.conditions)
 						pages->size += z.dataSize;
-					}
 				}
 			}
-			*pos += sizeof(DvObject<char>);
+			pos += sizeof(DvObject<char>);
 			for (auto& x : dvCommon->pages)
 			{
-				RawDvPage* rawPage = (RawDvPage*)&buffer[*pos];
+				RawDvPage* rawPage = (RawDvPage*)&buffer[pos];
 				rawPage->frameStart = (unsigned int)(x.frameStart * 100);
 				rawPage->frameEnd = (unsigned int)(x.frameEnd * 100);
 				rawPage->transitionCount = x.transition.size();
@@ -188,53 +185,53 @@ namespace dv {
 				rawPage->index = x.index;
 				memcpy(rawPage->name, x.name, 32);
 				rawPage->pageSize = x.unkData.size();
-				*pos += sizeof(RawDvPage);
-				int* unkData = (int*)&buffer[*pos];
+				pos += sizeof(RawDvPage);
+				int* unkData = (int*)&buffer[pos];
 				for (int unk = 0; unk < x.unkData.size(); unk++)
 					unkData[unk] = x.unkData[unk];
-				*pos += x.unkData.size() * sizeof(int);
+				pos += x.unkData.size() * sizeof(int);
 				for (auto& transition : x.transition) {
-					RawDvTransition* rawTransition = (RawDvTransition*)&buffer[*pos];
+					RawDvTransition* rawTransition = (RawDvTransition*)&buffer[pos];
 					rawTransition->destinationPageID = transition.destinationPageID;
 					rawTransition->conditionCount = transition.conditions.size();
 					rawTransition->conditionSize += transition.conditions.size() * sizeof(RawDvCondition);
 					for (auto& cond : transition.conditions)
 						rawTransition->conditionSize += cond.dataSize;
-					*pos += sizeof(RawDvTransition);
+					pos += sizeof(RawDvTransition);
 					for (auto& cond : transition.conditions) {
-						RawDvCondition* rawCond = (RawDvCondition*)&buffer[*pos];
+						RawDvCondition* rawCond = (RawDvCondition*)&buffer[pos];
 						rawCond->type = (int)cond.type;
 						rawCond->parametersSize = cond.dataSize;
-						*pos += sizeof(RawDvCondition);
-						memcpy(&buffer[*pos], cond.data, cond.dataSize);
-						*pos += cond.dataSize;
+						pos += sizeof(RawDvCondition);
+						memcpy(&buffer[pos], cond.data, cond.dataSize);
+						pos += cond.dataSize;
 					}
 				}
 			}
 		}
-		void writeDisableFrames(char* buffer, size_t* pos) {
-			DvObject<DvDisableFrame>* disableFrames = (DvObject<DvDisableFrame>*) & buffer[*pos];
+		void writeDisableFrames(char* buffer, size_t& pos) {
+			DvObject<DvDisableFrame>* disableFrames = (DvObject<DvDisableFrame>*)&buffer[pos];
 			disableFrames->count = dvCommon->disableFrameInfo.size();
-			*pos += sizeof(DvObject<DvDisableFrame>);
-			memcpy(&buffer[*pos], (char*)dvCommon->disableFrameInfo.data(), dvCommon->disableFrameInfo.size() * sizeof(DvDisableFrame));
-			*pos += disableFrames->count * sizeof(float);
+			pos += sizeof(DvObject<DvDisableFrame>);
+			memcpy(&buffer[pos], (char*)dvCommon->disableFrameInfo.data(), dvCommon->disableFrameInfo.size() * sizeof(DvDisableFrame));
+			pos += disableFrames->count * sizeof(float);
 		}
-		void writeResourceCuts(char* buffer, size_t* pos) {
-			DvObject<float>* cuts = (DvObject<float>*) & buffer[*pos];
+		void writeResourceCuts(char* buffer, size_t& pos) {
+			DvObject<float>* cuts = (DvObject<float>*) & buffer[pos];
 			cuts->count = dvCommon->resourceCutInfo.size();
-			*pos += sizeof(DvObject<float>);
-			memcpy(&buffer[*pos], (char*)dvCommon->resourceCutInfo.data(), dvCommon->resourceCutInfo.size() * sizeof(float));
-			*pos += cuts->count * sizeof(float);
+			pos += sizeof(DvObject<float>);
+			memcpy(&buffer[pos], (char*)dvCommon->resourceCutInfo.data(), dvCommon->resourceCutInfo.size() * sizeof(float));
+			pos += cuts->count * sizeof(float);
 		}
-		void writeSoundCuts(char* buffer, size_t* pos) {
-			DvObject<float>* cuts = (DvObject<float>*) & buffer[*pos];
+		void writeSoundCuts(char* buffer, size_t& pos) {
+			DvObject<float>* cuts = (DvObject<float>*)&buffer[pos];
 			cuts->count = dvCommon->soundCutInfo.size();
-			*pos += sizeof(DvObject<float>);
-			memcpy(&buffer[*pos], (char*)dvCommon->soundCutInfo.data(), dvCommon->soundCutInfo.size() * sizeof(float));
-			*pos += cuts->count * sizeof(float);
+			pos += sizeof(DvObject<float>);
+			memcpy(&buffer[pos], (char*)dvCommon->soundCutInfo.data(), dvCommon->soundCutInfo.size() * sizeof(float));
+			pos += cuts->count * sizeof(float);
 		}
-		void writeNode(char* buffer, size_t* pos, DvNode* node) {
-			RawDvNode* rawNode = (RawDvNode*)&buffer[*pos];
+		void writeNode(char* buffer, size_t& pos, DvNode* node) {
+			RawDvNode* rawNode = (RawDvNode*)&buffer[pos];
 			rawNode->guid = node->guid;
 			rawNode->category = node->category;
 			rawNode->nodeSize = node->dataSize / 4;
@@ -242,18 +239,18 @@ namespace dv {
 			rawNode->nodeFlags = node->nodeFlags;
 			rawNode->priority = node->priority;
 			memcpy(rawNode->name, node->name, 64);
-			*pos += sizeof(RawDvNode);
-			memcpy(&buffer[*pos], node->data, node->dataSize);
-			*pos += node->dataSize;
+			pos += sizeof(RawDvNode);
+			memcpy(&buffer[pos], node->data, node->dataSize);
+			pos += node->dataSize;
 			for (auto x : node->childNodes)
 				writeNode(buffer, pos, &x);
 		}
-		void writeResources(char* buffer, size_t* pos) {
-			DvObject<Resource>* resources = (DvObject<Resource>*) & buffer[*pos];
+		void writeResources(char* buffer, size_t& pos) {
+			DvObject<Resource>* resources = (DvObject<Resource>*)&buffer[pos];
 			resources->count = dvResource.size();
-			*pos += sizeof(DvObject<Resource>);
-			memcpy(&buffer[*pos], (char*)dvResource.data(), dvResource.size() * sizeof(Resource));
-			*pos += resources->count * sizeof(Resource);
+			pos += sizeof(DvObject<Resource>);
+			memcpy(&buffer[pos], (char*)dvResource.data(), dvResource.size() * sizeof(Resource));
+			pos += resources->count * sizeof(Resource);
 		}
 
 	public:
@@ -301,30 +298,28 @@ namespace dv {
 			size_t pos = 0;
 			
 			RawDvCommon* rawDvCommon = (RawDvCommon*)&dataBuffer[pos];
-			writeCommon(dataBuffer, &pos);
+			writeCommon(dataBuffer, pos);
 
 			rawDvCommon->cuts.ptr = pos;
-			writeCuts(dataBuffer, &pos);
+			writeCuts(dataBuffer, pos);
 
 			rawDvCommon->pages.ptr = pos;
-			writePages(dataBuffer, &pos);
+			writePages(dataBuffer, pos);
 
 			rawDvCommon->disableFrameInfo.ptr = pos;
-			writeDisableFrames(dataBuffer, &pos);
+			writeDisableFrames(dataBuffer, pos);
 
 			rawDvCommon->resourceCutInfo.ptr = pos;
-			writeResourceCuts(dataBuffer, &pos);
+			writeResourceCuts(dataBuffer, pos);
 
 			rawDvCommon->soundCutInfo.ptr = pos;
-			writeSoundCuts(dataBuffer, &pos);
+			writeSoundCuts(dataBuffer, pos);
 
 			rawDvCommon->node.ptr = pos;
-			writeNode(dataBuffer, &pos, dvCommon->node);
+			writeNode(dataBuffer, pos, dvCommon->node);
 
 			header->dvResource.ptr = pos;
-			writeResources(dataBuffer, &pos);
-			
-			assert(pos > buffer.size, "Attempt to write beyond buffer size!");
+			writeResources(dataBuffer, pos);
 
 			return buffer;
 		}
