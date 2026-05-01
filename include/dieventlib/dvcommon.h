@@ -40,5 +40,11 @@ namespace dv {
 		float chainCameraOut;
 		int type;
 		int skipPointTick;
+
+		void free() {
+			delete node;
+		}
+
+		inline ~DvCommon() { free(); }
 	};
 }

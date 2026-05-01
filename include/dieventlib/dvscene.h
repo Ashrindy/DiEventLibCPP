@@ -323,5 +323,11 @@ namespace dv {
 
 			return buffer;
 		}
+
+		void free() {
+			delete dvCommon;
+		}
+
+		inline ~DvScene() { free(); }
 	};
 }
