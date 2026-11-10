@@ -1,36 +1,23 @@
 cmake_minimum_required(VERSION 3.27)
 
-project(DiEventLib VERSION 0.1.1 DESCRIPTION "DiEvent/DvScene library" LANGUAGES CXX)
-set(PROJECT_AUTHOR "Ashrindy, ik-01")
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+if(CMAKE_BUILD_TYPE STREQUAL "Release")	
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Os -fdata-sections -ffunction-sections -fno-ident" CACHE STRING "C++ Compiler flags" FORCE)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lm -fPIC -fno-ident -s -Wl,--gc-sections" CACHE STRING "EXE link flags" FORCE)
+    endif()
+endif()
 
-add_library(DiEventLib STATIC)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -g3 -Wall " CACHE STRING "C++ Compiler flags" FORCE)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lm " CACHE STRING "EXE link flags" FORCE)
+    endif()
+endif()
 
-target_sources(DiEventLib
-    PRIVATE
-        src/internal.cpp
-        src/template/dievtdbbin.cpp
-        src/template/dievtdb.cpp
-    PUBLIC FILE_SET HEADERS FILES
-        include/dieventlib/dvcommon.h
-        include/dieventlib/dvdisableframe.h
-        include/dieventlib/dvheader.h
-        include/dieventlib/dvnode.h
-        include/dieventlib/dvnodestructs.h
-        include/dieventlib/dvobject.h
-        include/dieventlib/dvpage.h
-        include/dieventlib/dvresource.h
-        include/dieventlib/dvscene.h
-        include/dieventlib/internal.h
-        include/dieventlib/memory.h
-        include/dieventlib/template/dievtdb.h
-        include/dieventlib/template/dievtdbbin.h
-)
+add_subdirectory("dvscene-lib")
 
-target_include_directories(DiEventLib
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-)
+set(DVSCENE_LIB_TEST False CACHE STRING "Build the test app for the lib")
+
+if(DVSCENE_LIB_TEST)
+    add_subdirectory("dvscene-lib-test")
+endif()

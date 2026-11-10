@@ -26,7 +26,6 @@ namespace dv {
 	};
 
 	struct DvCommon {
-	public:
 		float frameStart;
 		float frameEnd;
 		int drawNodeNumber;

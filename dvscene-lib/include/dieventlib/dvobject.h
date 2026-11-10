@@ -11,7 +11,7 @@ namespace dv {
 		long long unk0;
 
 	public:
-		T* getItems() {
+		inline T* getItems() {
 			return reinterpret_cast<T*>((uintptr_t)this + 16);
 		}
 	};

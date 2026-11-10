@@ -3,7 +3,6 @@
 
 namespace dv {
 	struct Resource {
-	public:
 		enum class Type : int {
 			Character = 2,
 			CameraMotion = 4,

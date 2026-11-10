@@ -3,22 +3,18 @@
 
 namespace dv {
 	struct RawDvCondition {
-	public:
 		int type;
 		int parametersSize;
-	private:
 		long long unknown0;
 	};
 
 	struct RawDvTransition {
-	public:
 		int destinationPageID;
 		int conditionCount;
 		long long conditionSize;
 	};
 
 	struct RawDvPage {
-	public:
 		unsigned int version;
 		unsigned int flags;
 		unsigned int frameStart;
@@ -35,7 +31,6 @@ namespace dv {
 	};
 
 	struct DvCondition {
-	public:
 		enum class ConditionType : unsigned int {
 			Random = 0,
 			PagePlayCount,
@@ -51,16 +46,13 @@ namespace dv {
 	};
 
 	struct DvTransition {
-	public:
 		int destinationPageID;
 		std::vector<DvCondition> conditions;
 	};
 
 	struct DvPage {
-	private:
 		unsigned int version;
 		unsigned int flags;
-	public:
 		float frameStart;
 		float frameEnd;
 		float skipFrame;
